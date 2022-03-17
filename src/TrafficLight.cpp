@@ -46,8 +46,12 @@ void TrafficLight::simulate()
 // virtual function which is executed in a thread
 void TrafficLight::cycleThroughPhases()
 {
+    std::random_device rd;
+    std::mt19937 e{rd()};
+    std::uniform_real_distribution<double> dist{4000, 6000};
+
     auto start_time = std::chrono::system_clock::now();
-    std::chrono::duration<double> cycle_time = std::chrono::milliseconds(4000 + 2000 * (rand() / RAND_MAX));
+    std::chrono::duration<double> cycle_time = std::chrono::milliseconds((int)dist(e));
 
     // Infinite loop that cycles through red and green lights
     while (true) {
@@ -60,7 +64,7 @@ void TrafficLight::cycleThroughPhases()
             _currentPhase = TrafficLightPhase::red;
         }
         _queue.send(std::move(_currentPhase));
-        cycle_time = std::chrono::milliseconds(4000 + 2000 * (rand() / RAND_MAX));
+        cycle_time = std::chrono::milliseconds((int)dist(e));
         start_time = std::chrono::system_clock::now();
     }
 }
